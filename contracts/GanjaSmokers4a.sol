@@ -1230,9 +1230,35 @@ abstract contract Ownable is Context {
 }
 
 
+
+
 pragma solidity >=0.7.0 <0.9.0;
 
-contract GanjaSmokers4a is ERC721Enumerable, Ownable {
+//https://docs.opensea.io/docs/polygon-basic-integration
+abstract contract ContextMixin {
+    function msgSender()
+        internal
+        view
+        returns (address payable sender)
+    {
+        if (msg.sender == address(this)) {
+            bytes memory array = msg.data;
+            uint256 index = msg.data.length;
+            assembly {
+                // Load the 32 bytes word from memory with the address on the lower 20 bytes, and mask those.
+                sender := and(
+                    mload(add(array, index)),
+                    0xffffffffffffffffffffffffffffffffffffffff
+                )
+            }
+        } else {
+            sender = payable(msg.sender);
+        }
+        return sender;
+    }
+}
+
+contract GanjaSmokers4a is ERC721Enumerable, ContextMixin, Ownable {
   using Strings for uint256;
 
   string public baseURI;
@@ -1299,6 +1325,28 @@ contract GanjaSmokers4a is ERC721Enumerable, Ownable {
         ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), baseExtension))
         : "";
   }
+
+  //https://docs.opensea.io/docs/polygon-basic-integration
+  function isApprovedForAll(
+        address _owner,
+        address _operator
+    ) public override view returns (bool isOperator) {
+      // if OpenSea's ERC721 Proxy Address is detected, auto-return true
+        if (_operator == address(0x58807baD0B376efc12F5AD86aAc70E78ed67deaE)) {
+            return true;
+        }
+        
+        // otherwise, use the default ERC721.isApprovedForAll()
+        return ERC721.isApprovedForAll(_owner, _operator);
+    }
+    function _msgSender()
+        internal
+        override
+        view
+        returns (address sender)
+    {
+        return ContextMixin.msgSender();
+    }
 
   //only owner
   
