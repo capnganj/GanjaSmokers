@@ -1243,16 +1243,13 @@ contract GanjaSmokers4a is ERC721Enumerable, Ownable {
   uint256 public maxMintAmount = 20;
   uint256 public nftPerAddressLimit = 3;
   bool public paused = false;
-  bool public revealed = false;
 
   constructor(
     string memory _name,
     string memory _symbol,
-    string memory _initBaseURI,
-    string memory _initNotRevealedUri
+    string memory _initBaseURI
   ) ERC721(_name, _symbol) {
     setBaseURI(_initBaseURI);
-    setNotRevealedURI(_initNotRevealedUri);
   }
 
   // internal
@@ -1302,10 +1299,6 @@ contract GanjaSmokers4a is ERC721Enumerable, Ownable {
       _exists(tokenId),
       "ERC721Metadata: URI query for nonexistent token"
     );
-    
-    if(revealed == false) {
-        return notRevealedUri;
-    }
 
     string memory currentBaseURI = _baseURI();
     return bytes(currentBaseURI).length > 0
@@ -1314,9 +1307,6 @@ contract GanjaSmokers4a is ERC721Enumerable, Ownable {
   }
 
   //only owner
-  function reveal() public onlyOwner {
-      revealed = true;
-  }
   
   function setNftPerAddressLimit(uint256 _limit) public onlyOwner {
     nftPerAddressLimit = _limit;
@@ -1336,10 +1326,6 @@ contract GanjaSmokers4a is ERC721Enumerable, Ownable {
 
   function setBaseExtension(string memory _newBaseExtension) public onlyOwner {
     baseExtension = _newBaseExtension;
-  }
-  
-  function setNotRevealedURI(string memory _notRevealedURI) public onlyOwner {
-    notRevealedUri = _notRevealedURI;
   }
 
   function pause(bool _state) public onlyOwner {
