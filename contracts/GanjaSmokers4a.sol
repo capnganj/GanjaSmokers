@@ -1237,8 +1237,8 @@ contract GanjaSmokers4a is ERC721Enumerable, Ownable {
 
   string public baseURI;
   string public baseExtension = ".json";
-  uint256 public cost = 1 ether;
-  uint256 public maxSupply = 10000;
+  uint256 public cost = 0 ether;
+  uint256 public maxSupply = 54;
   uint256 public maxMintAmount = 20;
   bool public paused = false;
 
@@ -1256,16 +1256,12 @@ contract GanjaSmokers4a is ERC721Enumerable, Ownable {
   }
 
   // public
-  function mint(uint256 _mintAmount) public payable {
+  function mint(uint256 _mintAmount) public onlyOwner {
     require(!paused, "the contract is paused");
     uint256 supply = totalSupply();
     require(_mintAmount > 0, "need to mint at least 1 NFT");
     require(_mintAmount <= maxMintAmount, "max mint amount per session exceeded");
     require(supply + _mintAmount <= maxSupply, "max NFT limit exceeded");
-
-    if (msg.sender != owner()) {
-        require(msg.value >= cost * _mintAmount, "insufficient funds");
-    }
 
     for (uint256 i = 1; i <= _mintAmount; i++) {
       _safeMint(msg.sender, supply + i);
