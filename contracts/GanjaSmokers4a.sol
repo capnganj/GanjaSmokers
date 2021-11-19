@@ -1229,7 +1229,6 @@ abstract contract Ownable is Context {
     }
 }
 
-// SPDX-License-Identifier: GPL-3.0
 
 pragma solidity >=0.7.0 <0.9.0;
 
@@ -1245,8 +1244,6 @@ contract NFT is ERC721Enumerable, Ownable {
   uint256 public nftPerAddressLimit = 3;
   bool public paused = false;
   bool public revealed = false;
-  bool public onlyWhitelisted = true;
-  address[] public whitelistedAddresses;
 
   constructor(
     string memory _name,
@@ -1272,10 +1269,6 @@ contract NFT is ERC721Enumerable, Ownable {
     require(supply + _mintAmount <= maxSupply, "max NFT limit exceeded");
 
     if (msg.sender != owner()) {
-        if(onlyWhitelisted == true) {
-            require(isWhitelisted(msg.sender), "user is not whitelisted");
-            require(ownerMintedCount + _mintAmount <= nftPerAddressLimit, "max NFT per address exceeded");
-        }
         require(msg.value >= cost * _mintAmount, "insufficient funds");
     }
 
@@ -1283,15 +1276,7 @@ contract NFT is ERC721Enumerable, Ownable {
       _safeMint(msg.sender, supply + i);
     }
   }
-  
-  function isWhitelisted(address _user) public view returns (bool) {
-    for (uint i = 0; i < whitelistedAddresses.length; i++) {
-      if (whitelistedAddresses[i] == _user) {
-          return true;
-      }
-    }
-    return false;
-  }
+
 
   function walletOfOwner(address _owner)
     public
@@ -1361,15 +1346,7 @@ contract NFT is ERC721Enumerable, Ownable {
     paused = _state;
   }
   
-  function setOnlyWhitelisted(bool _state) public onlyOwner {
-    onlyWhitelisted = _state;
-  }
-  
-  function whitelistUsers(address[] calldata _users) public onlyOwner {
-    delete whitelistedAddresses;
-    whitelistedAddresses = _users;
-  }
- 
+
   function withdraw() public payable onlyOwner {
     // This will pay HashLips 5% of the initial sale.
     // You can remove this if you want, or keep it in to support HashLips and his channel.
