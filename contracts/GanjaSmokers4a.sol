@@ -1237,11 +1237,9 @@ contract GanjaSmokers4a is ERC721Enumerable, Ownable {
 
   string public baseURI;
   string public baseExtension = ".json";
-  string public notRevealedUri;
   uint256 public cost = 1 ether;
   uint256 public maxSupply = 10000;
   uint256 public maxMintAmount = 20;
-  uint256 public nftPerAddressLimit = 3;
   bool public paused = false;
 
   constructor(
@@ -1307,10 +1305,6 @@ contract GanjaSmokers4a is ERC721Enumerable, Ownable {
   }
 
   //only owner
-  
-  function setNftPerAddressLimit(uint256 _limit) public onlyOwner {
-    nftPerAddressLimit = _limit;
-  }
   
   function setCost(uint256 _newCost) public onlyOwner {
     cost = _newCost;
