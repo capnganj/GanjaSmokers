@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-// Amended by HashLips
+// Amended by HashLips and then again by @capnganj
 /**
     !Disclaimer!
     These contracts have been used to create tutorials,
@@ -8,9 +8,8 @@
     how to create smart contracts on the blockchain.
     please review this code on your own before using any of
     the following code for production.
-    HashLips will not be liable in any way if for the use 
-    of the code. That being said, the code has been tested 
-    to the best of the developers' knowledge to work as intended.
+    HashLips and @capnganj will not be liable in any way if for the use 
+    of the code. 
 */
 
 // File: @openzeppelin/contracts/utils/introspection/IERC165.sol
@@ -1248,7 +1247,6 @@ contract NFT is ERC721Enumerable, Ownable {
   bool public revealed = false;
   bool public onlyWhitelisted = true;
   address[] public whitelistedAddresses;
-  mapping(address => uint256) public addressMintedBalance;
 
   constructor(
     string memory _name,
@@ -1276,14 +1274,12 @@ contract NFT is ERC721Enumerable, Ownable {
     if (msg.sender != owner()) {
         if(onlyWhitelisted == true) {
             require(isWhitelisted(msg.sender), "user is not whitelisted");
-            uint256 ownerMintedCount = addressMintedBalance[msg.sender];
             require(ownerMintedCount + _mintAmount <= nftPerAddressLimit, "max NFT per address exceeded");
         }
         require(msg.value >= cost * _mintAmount, "insufficient funds");
     }
 
     for (uint256 i = 1; i <= _mintAmount; i++) {
-      addressMintedBalance[msg.sender]++;
       _safeMint(msg.sender, supply + i);
     }
   }
