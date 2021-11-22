@@ -1258,7 +1258,7 @@ abstract contract ContextMixin {
     }
 }
 
-contract GanjaSmokers4b is ERC721Enumerable, ContextMixin, Ownable {
+contract GanjaSmokersBeta is ERC721Enumerable, ContextMixin, Ownable {
   using Strings for uint256;
 
   string public baseURI;
